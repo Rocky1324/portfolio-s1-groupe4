@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}SVT - Bio-techno Serre{% endblock %}
+
+{% block content %}
+<div class="split-layout">
+    <div>
+        <h1 style="font-size: 3rem; margin-bottom: 1rem;"><span class="gradient-text"
+                style="background: linear-gradient(90deg, var(--accent-green), #00d2ff); -webkit-background-clip: text;">SVT</span>
+        </h1>
+        <h2>Bio-techno Serre Intelligente</h2>
+        <p style="color: var(--text-secondary); margin-top: 1rem;">
+            Une serre connectée qui gère automatiquement son environnement. Elle intègre un système de pluie
+            artificielle,
+            une régulation thermique par ventilation et une distribution intelligente de nutriments/pesticides.
+        </p>
+
+        <div class="card" style="margin-top: 2rem;">
+            <h3>Panneau de Contrôle</h3>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+                <!-- Température -->
+                <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 10px; text-align: center;">
+                    <i class="fa-solid fa-temperature-half"
+                        style="font-size: 2rem; color: #ff9f43; margin-bottom: 0.5rem;"></i>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Température</div>
+                    <div id="temp-val" style="font-size: 1.5rem; font-weight: bold; color: #ff9f43;">35°C</div>
+                    <div style="font-size: 0.8rem; color: var(--accent-red); margin-top: 0.5rem;" id="temp-status">Trop
+                        chaud!</div>
+                </div>
+
+                <!-- Humidité -->
+                <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 10px; text-align: center;">
+                    <i class="fa-solid fa-droplet" style="font-size: 2rem; color: #00d2ff; margin-bottom: 0.5rem;"></i>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Humidité</div>
+                    <div id="hum-val" style="font-size: 1.5rem; font-weight: bold; color: #00d2ff;">30%</div>
+                    <div style="font-size: 0.8rem; color: var(--accent-red); margin-top: 0.5rem;" id="hum-status">Trop
+                        sec!</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <button id="vent-btn" class="btn btn-primary"
+                    style="flex: 1; background: linear-gradient(90deg, #ff9f43, #ff6b6b);">Activer Ventilation</button>
+                <button id="rain-btn" class="btn btn-primary"
+                    style="flex: 1; background: linear-gradient(90deg, #00d2ff, #3a7bd5);">Activer Pluie</button>
+            </div>
+
+            <button id="auto-btn" class="btn btn-primary"
+                style="margin-top: 1rem; width: 100%; background: linear-gradient(90deg, var(--accent-green), #20bf55);">Mode
+                100% Automatique</button>
+        </div>
+    </div>
+
+    <div>
+        <!-- Conteneur 3D -->
+        <div class="canvas-container" id="canvas-svt" <div class="canvas-overlay">
+            <i class="fa-solid fa-cube"></i> Serre 3D (Glisser pour pivoter)
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/svt.js') }}"></script>
+{% endblock %}

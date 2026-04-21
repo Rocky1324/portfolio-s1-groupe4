@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Chimie - Béton Auto-réparant{% endblock %}
+
+{% block content %}
+<div class="split-layout">
+    <div>
+        <h1 style="font-size: 3rem; margin-bottom: 1rem;"><span class="gradient-text" style="background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue)); -webkit-background-clip: text;">Chimie</span></h1>
+        <h2>Béton à Organisme Auto-réparant</h2>
+        <p style="color: var(--text-secondary); margin-top: 1rem;">
+            Un béton innovant capable de régénérer ses propres fissures grâce à l'intégration de bactéries spécifiques.
+            Ce processus naturel permet de prolonger la durée de vie des structures et de réduire les coûts de maintenance.
+        </p>
+
+        <div class="card" style="margin-top: 2rem;">
+            <h3>Processus de cicatrisation</h3>
+            <ul class="step-list" id="chimie-steps">
+                <li id="step1" style="color: var(--accent-purple);">Création d'une fissure dans le béton (ex: stress mécanique).</li>
+                <li id="step2" style="opacity: 0.5;">L'eau pénètre et réveille les bactéries dormantes.</li>
+                <li id="step3" style="opacity: 0.5;">Les bactéries consomment les nutriments (lactate de calcium) et produisent du calcaire.</li>
+                <li id="step4" style="opacity: 0.5;">Le calcaire comble la fissure et restaure l'intégrité de la structure.</li>
+            </ul>
+            <button id="crack-btn" class="btn btn-primary" style="margin-top: 1rem; width: 100%; background: linear-gradient(90deg, #ff3366, #ff6b6b);">Provoquer une fissure</button>
+            <button id="heal-btn" class="btn btn-primary" style="margin-top: 1rem; width: 100%; display: none;">Déclencher la cicatrisation</button>
+        </div>
+    </div>
+
+    <div>
+        <!-- Conteneur 3D -->
+        <div class="canvas-container" id="canvas-chimie">
+            <div class="canvas-overlay">
+                <i class="fa-solid fa-cube"></i> Animation 3D (Glisser pour pivoter)
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chimie.js') }}"></script>
+{% endblock %}

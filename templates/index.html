@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - Innovations S1 Groupe 4{% endblock %}
+
+{% block content %}
+<div style="text-align: center; margin-bottom: 4rem; padding-top: 2rem;">
+    <h1 style="font-size: 4rem; margin-bottom: 1rem;">Le recueil des projets du <br><span class="gradient-text">Groupe 4 - S1</span></h1>
+    <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 800px; margin: 0 auto;">
+        Découvrez nos recherches et nos prototypes interactifs modélisés en 3D. 
+        De l'ingénierie des matériaux à la biotechnologie en passant par la sismologie.
+    </p>
+</div>
+
+<div class="project-grid">
+    <!-- Physique -->
+    <div class="card" onclick="window.location.href='{{ url_for('physique') }}'" style="cursor: pointer;">
+        <i class="fa-solid fa-flask" style="font-size: 3rem; color: var(--accent-blue); margin-bottom: 1rem;"></i>
+        <h2>Physique</h2>
+        <h3 style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 1.1rem;">Machine de Traction Universelle</h3>
+        <p>Conception d'un instrument scientifique capable de mesurer la résistance mécanique des matériaux avec traitement en temps réel.</p>
+        <div style="margin-top: 1.5rem;">
+            <span class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Explorer en 3D <i class="fa-solid fa-arrow-right"></i></span>
+        </div>
+    </div>
+
+    <!-- Chimie -->
+    <div class="card" onclick="window.location.href='{{ url_for('chimie') }}'" style="cursor: pointer;">
+        <i class="fa-solid fa-atom" style="font-size: 3rem; color: var(--accent-purple); margin-bottom: 1rem;"></i>
+        <h2>Chimie</h2>
+        <h3 style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 1.1rem;">Béton Auto-réparant</h3>
+        <p>Un matériau de construction innovant intégrant des bactéries capables de régénérer les fissures automatiquement.</p>
+        <div style="margin-top: 1.5rem;">
+            <span class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Explorer en 3D <i class="fa-solid fa-arrow-right"></i></span>
+        </div>
+    </div>
+
+    <!-- SVT -->
+    <div class="card" onclick="window.location.href='{{ url_for('svt') }}'" style="cursor: pointer;">
+        <i class="fa-solid fa-leaf" style="font-size: 3rem; color: var(--accent-green); margin-bottom: 1rem;"></i>
+        <h2>SVT</h2>
+        <h3 style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 1.1rem;">Bio-techno Serre</h3>
+        <p>Une serre intelligente avec gestion automatique de la température, pluie artificielle et gestion des pesticides.</p>
+        <div style="margin-top: 1.5rem;">
+            <span class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Explorer en 3D <i class="fa-solid fa-arrow-right"></i></span>
+        </div>
+    </div>
+
+    <!-- Sismologie -->
+    <div class="card" onclick="window.location.href='{{ url_for('sismologie') }}'" style="cursor: pointer;">
+        <i class="fa-solid fa-house-crack" style="font-size: 3rem; color: var(--accent-red); margin-bottom: 1rem;"></i>
+        <h2>Sismologie</h2>
+        <h3 style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 1.1rem;">Guide de Prévention</h3>
+        <p>Animations interactives et guide étape par étape pour connaître les précautions à prendre lors d'un séisme.</p>
+        <div style="margin-top: 1.5rem;">
+            <span class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem; background: linear-gradient(90deg, var(--accent-red), #ff6b6b);">Voir l'animation <i class="fa-solid fa-arrow-right"></i></span>
+        </div>
+    </div>
+</div>
+{% endblock %}
