@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: chimics-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      # Optionnel: si tu veux utiliser une base de données PostgreSQL sur Render, 
+      # tu peux créer une base de données sur Render et lier sa DATABASE_URL ici.
+      # Render le fera automatiquement si tu ajoutes un service `type: psql` dans ce fichier.
