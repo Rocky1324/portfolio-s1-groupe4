@@ -70,10 +70,7 @@ L'application démarrera et générera automatiquement la base de données SQLit
 Ouvrez votre navigateur web et accédez à l'adresse suivante : **http://127.0.0.1:5000**
 
 ## 👥 Auteurs
-
 - **Groupe 4 de la classe S1**
-- Développé en collaboration avec une IA.
-
 ## 📄 Licence
 
 Ce projet est sous licence MIT. N'hésitez pas à l'utiliser et à le modifier !
