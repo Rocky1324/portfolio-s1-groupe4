@@ -37,6 +37,13 @@
             <li><a href="{{ url_for('svt') }}"><i class="fa-solid fa-leaf"></i> SVT</a></li>
             <li><a href="{{ url_for('sismologie') }}"><i class="fa-solid fa-house-crack"></i> Sismologie</a></li>
         </ul>
+        <div class="lang-selector" style="margin-left: 20px;">
+            <select id="lang-switch" onchange="changeLanguage(this.value)" style="background: rgba(255,255,255,0.1); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; padding: 8px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif;">
+                <option value="fr" style="color: black;">🇫🇷 Français</option>
+                <option value="en" style="color: black;">🇺🇸 English</option>
+                <option value="ht" style="color: black;">🇭🇹 Kreyòl</option>
+            </select>
+        </div>
     </nav>
 
     <main class="container">
@@ -46,6 +53,64 @@
     <footer>
         <p>&copy; 2026 Classe S1 - Groupe 4. Tous droits réservés.</p>
     </footer>
+
+    <!-- Google Translate Element (Hidden) -->
+    <div id="google_translate_element" style="display: none;"></div>
+    
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'fr', 
+                includedLanguages: 'en,fr,ht',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <script>
+        // Custom Language Switcher Logic
+        function changeLanguage(lang) {
+            var selectField = document.querySelector("#google_translate_element select");
+            if (!selectField) {
+                // If translate element not loaded yet, retry shortly
+                setTimeout(function() { changeLanguage(lang); }, 500);
+                return;
+            }
+            
+            for(var i=0; i < selectField.children.length; i++) {
+                if(selectField.children[i].value == lang) {
+                    selectField.selectedIndex = i;
+                    selectField.dispatchEvent(new Event('change'));
+                    break;
+                }
+            }
+        }
+
+        // Restore custom dropdown value based on active translation
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                var selectField = document.querySelector("#google_translate_element select");
+                var customSwitch = document.getElementById("lang-switch");
+                if (selectField && selectField.value) {
+                    customSwitch.value = selectField.value;
+                } else {
+                    // Check cookie if value is empty
+                    var match = document.cookie.match(/googtrans=\/fr\/([a-z]{2})/);
+                    if (match && match[1]) {
+                        customSwitch.value = match[1];
+                    }
+                }
+            }, 1000);
+        });
+    </script>
+
+    <!-- Hide Google Translate Banner -->
+    <style>
+        body { top: 0 !important; }
+        .skiptranslate > iframe { display: none !important; }
+        .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; } /* Additional banner hide */
+    </style>
 
     {% block scripts %}{% endblock %}
 </body>
