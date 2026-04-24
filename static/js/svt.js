@@ -217,6 +217,47 @@ document.addEventListener("DOMContentLoaded", () => {
     const tempStatus = document.getElementById('temp-status');
     const humVal = document.getElementById('hum-val');
     const humStatus = document.getElementById('hum-status');
+    const citySelector = document.getElementById('city-selector');
+
+    async function fetchRealWeather(lat, lon) {
+        try {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m`;
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if(data && data.current) {
+                // Update internal greenhouse to reflect outside weather opening
+                temp = data.current.temperature_2m;
+                hum = data.current.relative_humidity_2m;
+                
+                // Add a small visual flash to indicate sync
+                tempVal.style.textShadow = "0 0 10px #ff9f43";
+                humVal.style.textShadow = "0 0 10px #00d2ff";
+                setTimeout(() => {
+                    tempVal.style.textShadow = "none";
+                    humVal.style.textShadow = "none";
+                }, 1000);
+                
+                updateUI();
+                console.log(`Weather synced for ${lat}, ${lon}: Temp ${temp}°C, Hum ${hum}%`);
+            }
+        } catch(e) {
+            console.error("Error fetching weather from Open-Meteo:", e);
+        }
+    }
+
+    citySelector.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if(val !== 'auto') {
+            const [lat, lon] = val.split(',');
+            fetchRealWeather(lat, lon);
+            
+            // Also enable auto mode automatically when city is chosen to show the reaction
+            if(!autoMode) {
+                autoBtn.click();
+            }
+        }
+    });
 
     function updateUI() {
         tempVal.innerText = temp.toFixed(1) + "°C";
@@ -270,18 +311,21 @@ document.addEventListener("DOMContentLoaded", () => {
             rainBtn.innerText = isRaining ? "Arrêter Pluie" : "Activer Pluie";
         }
 
-        // Physique simple
-        if(isVentilating) temp -= 0.5;
-        else temp += 0.2; // Chauffe naturelle
+        // Physique simple si pas de synchro continue
+        // Si mode auto, la météo se régule plus vite
+        const variation = autoMode ? 0.8 : 0.2;
+        
+        if(isVentilating) temp -= (variation * 2);
+        else temp += variation; // Chauffe naturelle
 
-        if(isRaining) hum += 1.0;
-        else hum -= 0.3; // Sèche naturellement
+        if(isRaining) hum += (variation * 3);
+        else hum -= (variation * 1.5); // Sèche naturellement
 
         // Limites
-        if(temp < 20) temp = 20;
-        if(temp > 45) temp = 45;
-        if(hum < 10) hum = 10;
-        if(hum > 90) hum = 90;
+        if(temp < 10) temp = 10;
+        if(temp > 50) temp = 50;
+        if(hum < 5) hum = 5;
+        if(hum > 95) hum = 95;
 
         updateUI();
     }, 1000);

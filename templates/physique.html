@@ -14,25 +14,65 @@
 
         <div class="card" style="margin-top: 2rem;">
             <h3>Simulation étape par étape</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <label for="mat-a" style="font-size: 0.9rem; color: var(--text-secondary);">Matériau A (Cyan)</label>
+                    <select id="mat-a" class="form-control" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; outline: none; margin-top: 0.5rem;">
+                        <option value="acier">Acier</option>
+                        <option value="aluminium">Aluminium</option>
+                        <option value="cuivre">Cuivre</option>
+                        <option value="bois">Bois (Chêne)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="mat-b" style="font-size: 0.9rem; color: var(--text-secondary);">Matériau B (Violet)</label>
+                    <select id="mat-b" class="form-control" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; outline: none; margin-top: 0.5rem;">
+                        <option value="aluminium" selected>Aluminium</option>
+                        <option value="acier">Acier</option>
+                        <option value="cuivre">Cuivre</option>
+                        <option value="bois">Bois (Chêne)</option>
+                    </select>
+                </div>
+            </div>
+
             <ul class="step-list" id="mtu-steps">
-                <li id="step1" style="color: var(--accent-blue);">Initialisation de la machine et placement de l'échantillon.</li>
-                <li id="step2" style="opacity: 0.5;">La traverse mobile descend (vis trapézoïdale) pour appliquer une force.</li>
+                <li id="step1" style="color: var(--accent-blue);">Initialisation de la machine et placement des échantillons.</li>
+                <li id="step2" style="opacity: 0.5;">La traverse mobile descend pour appliquer une force.</li>
                 <li id="step3" style="opacity: 0.5;">Mesure en temps réel (Cellule de charge + Déplacement).</li>
-                <li id="step4" style="opacity: 0.5;">Rupture de l'échantillon et affichage des données.</li>
+                <li id="step4" style="opacity: 0.5;">Rupture des échantillons et affichage des données.</li>
             </ul>
-            <button id="start-btn" class="btn btn-primary" style="margin-top: 1rem; width: 100%;">Démarrer le test</button>
+            <button id="start-btn" class="btn btn-primary" style="margin-top: 1rem; width: 100%;">Démarrer le test comparatif</button>
         </div>
 
         <div class="card" style="margin-top: 2rem;">
             <h3>Données en temps réel (Simulation)</h3>
-            <div style="display: flex; justify-content: space-between; margin-top: 1rem; margin-bottom: 2rem;">
-                <div>
-                    <span style="font-size: 0.9rem; color: var(--text-secondary);">Force Appliquée</span><br>
-                    <span id="force-val" style="font-size: 1.5rem; font-weight: bold; color: var(--accent-purple);">0.0 N</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; margin-bottom: 2rem;">
+                <div style="background: rgba(0, 240, 255, 0.1); padding: 10px; border-radius: 5px;">
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Matériau A (Cyan)</div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary);">Force</span><br>
+                            <span id="force-val-a" style="font-size: 1.2rem; font-weight: bold; color: var(--accent-blue);">0.0 N</span>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary);">Déformation</span><br>
+                            <span id="def-val-a" style="font-size: 1.2rem; font-weight: bold; color: var(--accent-blue);">0.00 mm</span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <span style="font-size: 0.9rem; color: var(--text-secondary);">Déformation</span><br>
-                    <span id="def-val" style="font-size: 1.5rem; font-weight: bold; color: var(--accent-blue);">0.00 mm</span>
+                <div style="background: rgba(155, 89, 182, 0.1); padding: 10px; border-radius: 5px;">
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Matériau B (Violet)</div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary);">Force</span><br>
+                            <span id="force-val-b" style="font-size: 1.2rem; font-weight: bold; color: var(--accent-purple);">0.0 N</span>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary);">Déformation</span><br>
+                            <span id="def-val-b" style="font-size: 1.2rem; font-weight: bold; color: var(--accent-purple);">0.00 mm</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             

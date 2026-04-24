@@ -11,7 +11,7 @@
     <!-- FontAwesome pour les icones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.0">
     
     <!-- Three.js CDN pour les modèles 3D -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -31,18 +31,24 @@
                 <span class="gradient-text">Groupe 4</span> S1
             </a>
         </div>
-        <ul class="nav-links">
-            <li><a href="{{ url_for('physique') }}"><i class="fa-solid fa-flask"></i> Physique</a></li>
-            <li><a href="{{ url_for('chimie') }}"><i class="fa-solid fa-atom"></i> Chimie</a></li>
-            <li><a href="{{ url_for('svt') }}"><i class="fa-solid fa-leaf"></i> SVT</a></li>
-            <li><a href="{{ url_for('sismologie') }}"><i class="fa-solid fa-house-crack"></i> Sismologie</a></li>
-        </ul>
-        <div class="lang-selector" style="margin-left: 20px;">
-            <select id="lang-switch" onchange="changeLanguage(this.value)" style="background: rgba(255,255,255,0.1); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; padding: 8px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif;">
-                <option value="fr" style="color: black;">🇫🇷 Français</option>
-                <option value="en" style="color: black;">🇺🇸 English</option>
-                <option value="ht" style="color: black;">🇭🇹 Kreyòl</option>
-            </select>
+        <div class="mobile-menu-btn" id="mobile-menu-btn">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <div class="nav-menu" id="nav-menu">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('physique') }}"><i class="fa-solid fa-flask"></i> Physique</a></li>
+                <li><a href="{{ url_for('chimie') }}"><i class="fa-solid fa-atom"></i> Chimie</a></li>
+                <li><a href="{{ url_for('svt') }}"><i class="fa-solid fa-leaf"></i> SVT</a></li>
+                <li><a href="{{ url_for('sismologie') }}"><i class="fa-solid fa-house-crack"></i> Sismologie</a></li>
+            </ul>
+            <div class="lang-selector">
+                <select id="lang-switch" onchange="changeLanguage(this.value)" style="background: rgba(255,255,255,0.1); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; padding: 8px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif;">
+                    <option value="fr" style="color: black;">🇫🇷 Français</option>
+                    <option value="en" style="color: black;">🇺🇸 English</option>
+                    <option value="ht" style="color: black;">🇭🇹 Kreyòl</option>
+                </select>
+            </div>
         </div>
     </nav>
 
@@ -102,6 +108,26 @@
                     }
                 }
             }, 1000);
+        });
+
+        // Mobile Menu Toggle Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const navMenu = document.getElementById('nav-menu');
+            
+            if(mobileBtn && navMenu) {
+                mobileBtn.addEventListener('click', function() {
+                    navMenu.classList.toggle('active');
+                    const icon = mobileBtn.querySelector('i');
+                    if(navMenu.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
         });
     </script>
 

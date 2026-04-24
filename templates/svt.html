@@ -16,9 +16,21 @@
         </p>
 
         <div class="card" style="margin-top: 2rem;">
-            <h3>Panneau de Contrôle</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0;">Panneau de Contrôle</h3>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-cloud-sun" style="color: var(--accent-blue);"></i>
+                    <select id="city-selector" style="background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; padding: 5px; outline: none; font-family: 'Inter', sans-serif;">
+                        <option value="auto">Météo Locale (Isolation)</option>
+                        <option value="18.5392,-72.3364">Port-au-Prince, HT</option>
+                        <option value="48.8566,2.3522">Paris, FR</option>
+                        <option value="35.6895,139.6917">Tokyo, JP</option>
+                        <option value="45.5017,-73.5673">Montréal, CA</option>
+                    </select>
+                </div>
+            </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
                 <!-- Température -->
                 <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 10px; text-align: center;">
                     <i class="fa-solid fa-temperature-half"

@@ -57,16 +57,28 @@ document.addEventListener("DOMContentLoaded", () => {
         type: 'line',
         data: {
             labels: [], // Déformation (X)
-            datasets: [{
-                label: 'Contrainte (Force)',
-                data: [], // Force (Y)
-                borderColor: '#00f0ff',
-                backgroundColor: 'rgba(0, 240, 255, 0.1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4,
-                pointRadius: 0
-            }]
+            datasets: [
+                {
+                    label: 'Force Matériau A (Cyan)',
+                    data: [], // Force A (Y)
+                    borderColor: '#00f0ff',
+                    backgroundColor: 'rgba(0, 240, 255, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0
+                },
+                {
+                    label: 'Force Matériau B (Violet)',
+                    data: [], // Force B (Y)
+                    borderColor: '#9b59b6',
+                    backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0
+                }
+            ]
         },
         options: {
             responsive: true,
@@ -135,15 +147,24 @@ document.addEventListener("DOMContentLoaded", () => {
     movingBar.position.y = 10;
     scene.add(movingBar);
 
-    const sampleMat = new THREE.MeshStandardMaterial({ color: 0xe74c3c }); 
-    const sample = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 4, 32), sampleMat);
-    sample.position.y = 2.5; 
+    const sampleMatA = new THREE.MeshStandardMaterial({ color: 0x00f0ff }); 
+    const sampleA = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 4, 32), sampleMatA);
+    sampleA.position.set(-2, 2.5, 0); 
+
+    const sampleMatB = new THREE.MeshStandardMaterial({ color: 0x9b59b6 }); 
+    const sampleB = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 4, 32), sampleMatB);
+    sampleB.position.set(2, 2.5, 0); 
     
-    const anchorBottom = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), materialDark);
-    anchorBottom.position.y = 0.5;
-    scene.add(anchorBottom);
+    const anchorBottomA = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, 1.5), materialDark);
+    anchorBottomA.position.set(-2, 0.5, 0);
+    scene.add(anchorBottomA);
+
+    const anchorBottomB = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, 1.5), materialDark);
+    anchorBottomB.position.set(2, 0.5, 0);
+    scene.add(anchorBottomB);
     
-    scene.add(sample);
+    scene.add(sampleA);
+    scene.add(sampleB);
 
     function animate() {
         requestAnimationFrame(animate);
@@ -160,12 +181,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- LOGIQUE DE SIMULATION ---
     const startBtn = document.getElementById('start-btn');
-    const forceVal = document.getElementById('force-val');
-    const defVal = document.getElementById('def-val');
+    const forceValA = document.getElementById('force-val-a');
+    const defValA = document.getElementById('def-val-a');
+    const forceValB = document.getElementById('force-val-b');
+    const defValB = document.getElementById('def-val-b');
+    const matASelect = document.getElementById('mat-a');
+    const matBSelect = document.getElementById('mat-b');
+
+    const materialsDb = {
+        'acier': { maxForce: 5000, plasticity: 0.6, rupture: 1.0 },
+        'aluminium': { maxForce: 2500, plasticity: 0.5, rupture: 0.8 },
+        'cuivre': { maxForce: 3000, plasticity: 0.7, rupture: 1.1 },
+        'bois': { maxForce: 1500, plasticity: 0.9, rupture: 0.95 }
+    };
     
     let isTesting = false;
     let progress = 0;
-    const maxForce = 5000; 
 
     startBtn.addEventListener('click', () => {
         if(isTesting) return;
@@ -174,9 +205,19 @@ document.addEventListener("DOMContentLoaded", () => {
         startBtn.disabled = true;
         startBtn.innerText = "Test en cours...";
 
+        // Récupération des propriétés des matériaux
+        const matA = materialsDb[matASelect.value];
+        const matB = materialsDb[matBSelect.value];
+        let brokenA = false;
+        let brokenB = false;
+
+        let finalForceA = 0, finalDefA = 0;
+        let finalForceB = 0, finalDefB = 0;
+
         // Reset Chart
         mtuChart.data.labels = [];
         mtuChart.data.datasets[0].data = [];
+        mtuChart.data.datasets[1].data = [];
         mtuChart.update();
 
         // Reset Audio
@@ -184,58 +225,92 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Reset 3D
         movingBar.position.y = 10;
-        sample.scale.y = 1;
-        sample.scale.x = 1;
-        sample.scale.z = 1;
-        sample.position.y = 2.5;
-        sampleMat.color.setHex(0xe74c3c); 
+        sampleA.scale.set(1, 1, 1);
+        sampleA.position.set(-2, 2.5, 0);
+        sampleA.visible = true;
+
+        sampleB.scale.set(1, 1, 1);
+        sampleB.position.set(2, 2.5, 0);
+        sampleB.visible = true;
         
         document.getElementById('step1').style.opacity = '0.5';
         document.getElementById('step1').style.color = 'var(--text-secondary)';
         document.getElementById('step2').style.opacity = '1';
         document.getElementById('step2').style.color = 'var(--accent-blue)';
-        
-        let finalForce = 0;
-        let finalDef = 0;
 
         const testInterval = setInterval(() => {
             progress += 0.01;
             
             movingBar.position.y = 5 + (progress * 5); 
             
-            const newHeight = 4 + (progress * 4);
-            sample.scale.y = newHeight / 4;
-            sample.position.y = 0.5 + (newHeight / 2); 
-            
-            const thinness = 1 - (progress * 0.4);
-            sample.scale.x = thinness;
-            sample.scale.z = thinness;
+            if(!brokenA) {
+                const newHeightA = 4 + (progress * 4);
+                sampleA.scale.y = newHeightA / 4;
+                sampleA.position.y = 0.5 + (newHeightA / 2); 
+                const thinnessA = 1 - (progress * 0.4);
+                sampleA.scale.x = thinnessA;
+                sampleA.scale.z = thinnessA;
+            }
 
-            // Calcul des valeurs
-            // Simulation d'une courbe élastique puis plastique
-            let currentForce = 0;
-            if(progress < 0.6) {
-                // Zone élastique (linéaire)
-                currentForce = (progress / 0.6) * maxForce;
-            } else {
-                // Zone plastique (arrondie)
-                currentForce = maxForce - ((progress - 0.6) * 1000); 
+            if(!brokenB) {
+                const newHeightB = 4 + (progress * 4);
+                sampleB.scale.y = newHeightB / 4;
+                sampleB.position.y = 0.5 + (newHeightB / 2); 
+                const thinnessB = 1 - (progress * 0.4);
+                sampleB.scale.x = thinnessB;
+                sampleB.scale.z = thinnessB;
+            }
+
+            const currentDef = progress * 15; 
+            mtuChart.data.labels.push(currentDef.toFixed(1));
+
+            // Calcul Matériau A
+            let currentForceA = 0;
+            if(!brokenA) {
+                if(progress > matA.rupture) {
+                    brokenA = true;
+                    sampleA.visible = false; // Rupture visuelle
+                    playSnapSound();
+                } else {
+                    if(progress < matA.plasticity) {
+                        currentForceA = (progress / matA.plasticity) * matA.maxForce;
+                    } else {
+                        currentForceA = matA.maxForce - ((progress - matA.plasticity) * 2000); 
+                    }
+                    currentForceA += (Math.random() * 50 - 25);
+                    finalForceA = Math.max(finalForceA, currentForceA);
+                    finalDefA = currentDef;
+                }
             }
             
-            // Ajouter un peu de bruit
-            currentForce += (Math.random() * 50 - 25);
-            
-            const currentDef = progress * 15; 
-            
-            finalForce = Math.max(finalForce, currentForce);
-            finalDef = currentDef;
+            // Calcul Matériau B
+            let currentForceB = 0;
+            if(!brokenB) {
+                if(progress > matB.rupture) {
+                    brokenB = true;
+                    sampleB.visible = false; // Rupture visuelle
+                    if(!brokenA || (brokenA && brokenB)) playSnapSound(); // Eviter spam sonore
+                } else {
+                    if(progress < matB.plasticity) {
+                        currentForceB = (progress / matB.plasticity) * matB.maxForce;
+                    } else {
+                        currentForceB = matB.maxForce - ((progress - matB.plasticity) * 2000); 
+                    }
+                    currentForceB += (Math.random() * 50 - 25);
+                    finalForceB = Math.max(finalForceB, currentForceB);
+                    finalDefB = currentDef;
+                }
+            }
 
-            forceVal.innerText = currentForce.toFixed(1) + " N";
-            defVal.innerText = currentDef.toFixed(2) + " mm";
+            forceValA.innerText = currentForceA > 0 ? currentForceA.toFixed(1) + " N" : "0.0 N";
+            defValA.innerText = brokenA ? finalDefA.toFixed(2) + " mm (Rupture)" : currentDef.toFixed(2) + " mm";
+            
+            forceValB.innerText = currentForceB > 0 ? currentForceB.toFixed(1) + " N" : "0.0 N";
+            defValB.innerText = brokenB ? finalDefB.toFixed(2) + " mm (Rupture)" : currentDef.toFixed(2) + " mm";
 
             // Update Chart
-            mtuChart.data.labels.push(currentDef.toFixed(1));
-            mtuChart.data.datasets[0].data.push(currentForce);
+            mtuChart.data.datasets[0].data.push(currentForceA > 0 ? currentForceA : null);
+            mtuChart.data.datasets[1].data.push(currentForceB > 0 ? currentForceB : null);
             mtuChart.update();
 
             // Update Audio Pitch
@@ -250,47 +325,46 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById('step3').style.color = 'var(--accent-purple)';
             }
 
-            // Rupture
-            if (progress >= 1.0) {
+            // Rupture globale (fin du test)
+            if (progress >= 1.2 || (brokenA && brokenB)) {
                 clearInterval(testInterval);
                 isTesting = false;
                 startBtn.disabled = false;
-                startBtn.innerText = "Recommencer le test";
+                startBtn.innerText = "Recommencer le test comparatif";
                 
-                // Rupture Audio & Visuelle
                 stopMotorSound();
-                playSnapSound();
                 
-                sample.scale.y = 0; 
-                sampleMat.color.setHex(0x000000);
+                if (brokenA) sampleA.visible = false;
+                if (brokenB) sampleB.visible = false;
                 
-                forceVal.innerText = "0.0 N";
-                
-                // Drop chart to 0
-                mtuChart.data.labels.push((currentDef + 0.1).toFixed(1));
-                mtuChart.data.datasets[0].data.push(0);
-                mtuChart.update();
-
                 document.getElementById('step3').style.opacity = '0.5';
                 document.getElementById('step3').style.color = 'var(--text-secondary)';
                 document.getElementById('step4').style.opacity = '1';
                 document.getElementById('step4').style.color = 'var(--accent-red)';
                 
-                // Sauvegarde via API
+                // Sauvegarde via API pour A
                 fetch('/api/mtu', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        material_name: 'Échantillon Standard',
-                        max_force: finalForce,
-                        max_deformation: finalDef
+                        material_name: matASelect.options[matASelect.selectedIndex].text,
+                        max_force: finalForceA,
+                        max_deformation: finalDefA
                     })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    console.log("Sauvegarde réussie :", data);
-                })
-                .catch(err => console.error("Erreur API :", err));
+                });
+                
+                // Sauvegarde via API pour B
+                setTimeout(() => {
+                    fetch('/api/mtu', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            material_name: matBSelect.options[matBSelect.selectedIndex].text,
+                            max_force: finalForceB,
+                            max_deformation: finalDefB
+                        })
+                    });
+                }, 500);
             }
         }, 50); 
     });
